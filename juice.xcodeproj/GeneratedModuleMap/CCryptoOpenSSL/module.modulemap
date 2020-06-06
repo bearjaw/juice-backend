@@ -1,4 +1,0 @@
-module CCryptoOpenSSL {
-    umbrella "/Users/maxbaumbach/Documents/git/juice/.build/checkouts/crypto/Sources/CCryptoOpenSSL/include"
-    export *
-}
