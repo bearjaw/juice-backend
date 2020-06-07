@@ -19,7 +19,5 @@ public func routes(_ router: Router) throws {
     bearer.delete("todos", Todo.parameter, use: todoController.delete)
 
     let playlistController = PlaylistController()
-    bearer.get("playlists", use: playlistController.list)
-    bearer.get("playlists", use: playlistController.playlist)
-    bearer.post("playlists", use: playlistController.all)
+    try playlistController.boot(router: router)
 }
