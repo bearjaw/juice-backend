@@ -11,6 +11,10 @@ import FluentSQLite
 
 final class PlaylistController {
 
+    enum PlaylistControllerError: Error {
+        case notFound
+    }
+
     func list(_ req: Request) throws -> Future<[PlaylistListItemResponse]> {
         let user = try req.requireAuthenticated(User.self)
 
@@ -20,15 +24,21 @@ final class PlaylistController {
             .map { $0.map(PlaylistListItemResponse.create(from:)) }
     }
 
-    func playlist(_ req: Request) throws -> Future<UserToken> {
-        // get user auth'd by basic auth middleware
+    func playlist(_ req: Request) throws -> Future<Playlist> {
+
         let user = try req.requireAuthenticated(User.self)
 
-        // create new token for this user
-        let token = try UserToken.create(userID: user.requireID())
+        return try req.content.decode(PlaylistListItemRequest.self)
+            .flatMap { item in
 
-        // save and return token
-        return token.save(on: req)
+            return try Playlist.query(on: req)
+                .filter(\.userID == user.requireID())
+                .filter(\.id == item.id)
+                .filter(\.remotePlaylistId == item.remoteId)
+                .filter(\.service == item.service)
+                .first()
+                .unwrap(or: PlaylistControllerError.notFound)
+        }
     }
 
     func all(_ req: Request) throws -> Future<UserToken> {
@@ -47,6 +57,10 @@ final class PlaylistController {
 struct PlaylistListItemRequest: Content {
 
     let id: Int
+
+    let remoteId: String
+
+    let service: Playlist.Service?
 
 }
 
