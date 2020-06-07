@@ -5,7 +5,8 @@ import XCTest
 class AppTests: XCTestCase {
 
     func testPlaylistController_init() throws {
-        XCTAssertTrue(PlaylistController())
+        XCTAssertNotNil(PlaylistController())
+    }
     }
     
     static let allTests = [
