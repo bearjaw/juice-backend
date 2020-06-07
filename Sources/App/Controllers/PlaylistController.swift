@@ -9,11 +9,20 @@ import Crypto
 import Vapor
 import FluentSQLite
 
-final class PlaylistController {
+final class PlaylistController: RouteCollection {
 
     enum PlaylistControllerError: Error {
         case notFound
     }
+
+    func boot(router: Router) throws {
+        let bearer = router.grouped(User.tokenAuthMiddleware())
+        bearer.get("playlists","lists", use: list)
+        bearer.get("playlists", use: playlist)
+        bearer.get("playlists", "all", use: all)
+        bearer.post("playlists", use: create)
+    }
+
 
     func list(_ req: Request) throws -> Future<[PlaylistListItemResponse]> {
         let user = try req.requireAuthenticated(User.self)
@@ -34,7 +43,7 @@ final class PlaylistController {
             return try Playlist.query(on: req)
                 .filter(\.userID == user.requireID())
                 .filter(\.id == item.id)
-                .filter(\.remotePlaylistId == item.remoteId)
+                .filter(\.remotePlaylistId == item.remotePlaylistId)
                 .filter(\.service == item.service)
                 .first()
                 .unwrap(or: PlaylistControllerError.notFound)
@@ -51,6 +60,14 @@ final class PlaylistController {
         // save and return token
         return token.save(on: req)
     }
+
+    func create(_ req: Request) throws -> Future<Playlist> {
+        // get user auth'd by basic auth middleware
+        _ = try req.requireAuthenticated(User.self)
+
+        // save and return token
+        return try req.content.decode(Playlist.self).save(on: req)
+    }
     
 }
 
@@ -58,9 +75,23 @@ struct PlaylistListItemRequest: Content {
 
     let id: Int
 
-    let remoteId: String
+    let remotePlaylistId: String
 
     let service: Playlist.Service?
+
+}
+
+struct PlaylistListItemCreateRequest: Content {
+
+    let id: Int
+
+    let remotePlaylistId: String
+
+    let service: Playlist.Service?
+
+    let title: String
+
+    let description: String?
 
 }
 
