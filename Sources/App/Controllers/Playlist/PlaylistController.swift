@@ -18,7 +18,7 @@ final class PlaylistController: RouteCollection {
     func boot(router: Router) throws {
         let bearer = router.grouped(User.tokenAuthMiddleware())
         bearer.get("playlists","lists", use: list)
-        bearer.get("playlists", use: playlist)
+        bearer.get("playlists", Playlist.parameter, use: playlist)
         bearer.get("playlists", "all", use: all)
         bearer.post("playlists", use: create)
     }
@@ -44,7 +44,7 @@ final class PlaylistController: RouteCollection {
                 .filter(\.userID == user.requireID())
                 .filter(\.id == item.id)
                 .filter(\.remotePlaylistId == item.remotePlaylistId)
-                .filter(\.service == item.service)
+                .filter(\.service == item.service?.rawValue)
                 .first()
                 .unwrap(or: PlaylistControllerError.notFound)
         }
@@ -63,58 +63,16 @@ final class PlaylistController: RouteCollection {
 
     func create(_ req: Request) throws -> Future<Playlist> {
         // get user auth'd by basic auth middleware
-        _ = try req.requireAuthenticated(User.self)
+        let user = try req.requireAuthenticated(User.self)
 
         // save and return token
-        return try req.content.decode(Playlist.self).save(on: req)
+        return try req
+            .content
+            .decode(CreatePlaylistRequest.self)
+            .flatMap {
+                try Playlist(from: $0, userID: user.requireID())
+                .save(on: req)
+            }
     }
     
 }
-
-struct PlaylistListItemRequest: Content {
-
-    let id: Int
-
-    let remotePlaylistId: String
-
-    let service: Playlist.Service?
-
-}
-
-struct PlaylistListItemCreateRequest: Content {
-
-    let id: Int
-
-    let remotePlaylistId: String
-
-    let service: Playlist.Service?
-
-    let title: String
-
-    let description: String?
-
-}
-
-struct PlaylistListItemResponse: Content {
-
-    let id: Int
-
-    let title: String
-
-    let description: String?
-
-    let itemCount: Int
-
-}
-
-extension PlaylistListItemResponse {
-
-    static func create(from playlist: Playlist) -> PlaylistListItemResponse {
-        PlaylistListItemResponse(id: playlist.id ?? 0,
-                                 title: playlist.title,
-                                 description: playlist.description,
-                                 itemCount: 0)
-    }
-
-}
-
