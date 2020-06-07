@@ -5,7 +5,6 @@
 //  Created by Max Baumbach on 07/06/2020.
 //
 
-import Authentication
 import FluentSQLite
 import Vapor
 
@@ -34,7 +33,7 @@ final class Playlist: SQLiteModel {
     var remotePlaylistId: String?
 
     /// The service where the playlist originates
-    var service: Service?
+    var service: String?
 
     /// Creates a new `Playlist`.
     init(id: Int? = nil,
@@ -48,7 +47,7 @@ final class Playlist: SQLiteModel {
         self.description = description
         self.userID = userID
         self.remotePlaylistId = remotePlaylistId
-        self.service = service
+        self.service = service?.rawValue
     }
 }
 
@@ -68,7 +67,6 @@ extension Playlist: Migration {
             builder.field(for: \.description)
             builder.field(for: \.service)
             builder.field(for: \.remotePlaylistId)
-            builder.field(for: \.title)
             builder.field(for: \.userID)
             builder.reference(from: \.userID, to: \User.id)
         }
