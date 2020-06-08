@@ -7,16 +7,16 @@
 
 import Foundation
 
-struct Song: Codable {
+public struct Song: Codable {
 
-    let id: String
+    public let id: String
 
-    let type: String
+    public let type: String
 
-    let href: String
+    public let href: String
 
-    let attributes: Attributes
+    public let attributes: Attributes
 
-    let relationships: Relationships
+    public let relationships: Relationships
 
 }

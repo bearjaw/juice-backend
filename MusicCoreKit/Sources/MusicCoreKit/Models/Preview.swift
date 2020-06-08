@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct Preview: Codable {
+public struct Preview: Codable {
 
-    let url: URL
+    public let url: URL
     
 }

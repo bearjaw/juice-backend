@@ -7,10 +7,10 @@
 
 import Foundation
 
-struct PlayParam: Codable {
+public struct PlayParam: Codable {
 
-    let id: String
+    public let id: String
 
-    let kind: String
+    public let kind: String
 
 }

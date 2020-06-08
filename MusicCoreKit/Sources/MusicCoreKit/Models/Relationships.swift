@@ -7,10 +7,10 @@
 
 import Foundation
 
-struct Relationships: Codable {
+public struct Relationships: Codable {
 
-    let artists: Relationship
+    public let artists: Relationship
 
-    let albums: Relationship
+    public let albums: Relationship
     
 }

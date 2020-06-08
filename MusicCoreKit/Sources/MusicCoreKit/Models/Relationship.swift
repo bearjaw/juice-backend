@@ -7,10 +7,10 @@
 
 import Foundation
 
-struct Relationship: Codable {
+public struct Relationship: Codable {
 
-    let href: String
+    public let href: String
 
-    let data: [RelationshipData]
+    public let data: [RelationshipData]
 
 }

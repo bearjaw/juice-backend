@@ -7,36 +7,36 @@
 
 import Foundation
 
-struct Attributes: Codable {
+public struct Attributes: Codable {
 
-    let previews: [Preview]
+    public let previews: [Preview]
 
-    let artwork: Artwork
+    public let artwork: Artwork
 
-    let artistName: String
+    public let artistName: String
 
-    let url: URL
+    public let url: URL
 
-    let discNumber: Int
+    public let discNumber: Int
 
-    let genreNames: [String]
+    public let genreNames: [String]
 
-    let durationInMillis: Int
+    public let durationInMillis: Int
 
-    let releaseDate: Date
+    public let releaseDate: Date
 
-    let name: String
+    public let name: String
 
-    let isrc: String
+    public let isrc: String
 
-    let hasLyrics: Bool
+    public let hasLyrics: Bool
 
-    let albumName: String
+    public let albumName: String
 
-    let playParams: PlayParam
+    public let playParams: PlayParam
 
-    let trackNumber: Int
+    public let trackNumber: Int
 
-    let composerName: String
+    public let composerName: String
 
 }

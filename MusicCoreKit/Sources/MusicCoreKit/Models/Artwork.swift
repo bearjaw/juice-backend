@@ -7,22 +7,22 @@
 
 import Foundation
 
-struct Artwork: Codable {
+public struct Artwork: Codable {
 
-    let width: Int
+    public let width: Int
 
-    let height: Int
+    public let height: Int
 
-    let url: URL
+    public let url: URL
 
-    let bgColor: String
+    public let bgColor: String
 
-    let textColor1: String
+    public let textColor1: String
 
-    let textColor2: String
+    public let textColor2: String
 
-    let textColor3: String
+    public let textColor3: String
     
-    let textColor4: String
+    public let textColor4: String
 
 }
