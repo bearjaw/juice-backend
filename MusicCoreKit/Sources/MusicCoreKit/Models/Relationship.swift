@@ -6,3 +6,11 @@
 //
 
 import Foundation
+
+struct Relationship: Codable {
+
+    let href: String
+
+    let data: [RelationshipData]
+
+}
