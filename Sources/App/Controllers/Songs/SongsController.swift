@@ -12,7 +12,14 @@ import MusicCoreKit
 
 extension Song: Content {}
 
-extension Song: Parameter {}
+extension Song: Parameter {
+    
+    public static func resolveParameter(_ parameter: String, on container: Container) throws -> String {
+        return ""
+    }
+
+    public typealias ResolvedParameter = String
+}
 
 final class SongsController: RouteCollection {
 
@@ -26,15 +33,11 @@ final class SongsController: RouteCollection {
     }
 
 
-    func search(_ req: Request) throws -> Future<[Song]> {
+    func search(_ req: Request) throws -> Future<Song> {
         let user = try req.requireAuthenticated(User.self)
+        return try req.content.decode(Song.self).always {
 
-        let client = try req.client()
-//        client.get("", headers: <#T##HTTPHeaders#>, beforeSend: <#T##(Request) throws -> ()#>)
-        return try Playlist.query(on: req)
-            .filter(\.userID == user.requireID())
-            .all()
-            .map { $0.map(PlaylistListItemResponse.create(from:)) }
+        }
     }
 
 }
