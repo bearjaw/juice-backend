@@ -14,9 +14,16 @@ let package = Package(
         .package(url: "https://github.com/vapor/auth.git", from: "2.0.0"),
 
         .package(url: "https://github.com/vapor/jwt.git", from: "3.0.0"),
+
+        .package(url: "https://github.com/bearjaw/MusicCore.git", from: "1.0.2"),
     ],
     targets: [
-        .target(name: "App", dependencies: ["Authentication", "FluentSQLite", "Vapor", "JWT"]),
+        .target(name: "App", dependencies: ["Authentication",
+                                            "FluentSQLite",
+                                            "Vapor",
+                                            "JWT",
+                                            "MusicCore"
+        ]),
         .target(name: "Run", dependencies: ["App"]),
         .testTarget(name: "AppTests", dependencies: ["App"])
     ]
