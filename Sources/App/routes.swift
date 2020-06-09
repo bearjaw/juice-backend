@@ -13,4 +13,7 @@ public func routes(_ router: Router) throws {
 
     let playlistController = PlaylistController()
     try playlistController.boot(router: router)
+
+    let songsController = SongsController()
+    try songsController.boot(router: router)
 }
