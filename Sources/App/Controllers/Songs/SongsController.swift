@@ -31,6 +31,9 @@ extension Song: Parameter {
 
 final class SongsController: RouteCollection {
 
+    private let formatter = ISO8601DateFormatter()
+    private let decoder = JSONDecoder()
+
     enum SongsControllerError: Error {
         case notFound
     }
@@ -45,13 +48,22 @@ final class SongsController: RouteCollection {
 
         let client = try req.client()
         let url = "\(MusicEnpoint.base)/\(MusicEnpoint.version)/catalog/us/songs/203709340"
+        let token = "Insert Your JWT Token here"
+        let headers = HTTPHeaders
+        ([
+            ("Authorization", "Bearer \(token)")
+        ])
 
-        let headers = HTTPHeaders([("Authorization", "")])
+        return client.get(url, headers: headers).flatMap { result in
 
-        return client.get(url, headers: headers).flatMap({ result in
-            return try result.content.decode(SongResult.self)
-                .map( { response in return response.data })
-        })
+            self.decoder.dateDecodingStrategy = DateDecoder.decodeDate(using: self.formatter)
+            
+            return try result.content.decode(SongResult.self, using: self.decoder)
+                .map { response in
+                    return response.data
+                }
+
+        }
     }
 
 }
