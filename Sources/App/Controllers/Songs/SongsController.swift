@@ -40,19 +40,23 @@ final class SongsController: RouteCollection {
 
     func boot(router: Router) throws {
 //        let bearer = router.grouped(User.tokenAuthMiddleware())
-        router.get("songs", use: search)
+        router.get(MusicEnpoint.search.rawValue, use: search)
+        router.get(MusicEnpoint.artists.rawValue, use: search)
     }
 
 
     func search(_ req: Request) throws -> Future<[Song]> {
 
         let client = try req.client()
-        let url = "\(MusicEnpoint.base)/\(MusicEnpoint.version)/catalog/us/songs/203709340"
         let token = "Insert Your JWT Token here"
-        let headers = HTTPHeaders
-        ([
+
+        let params = try req.query.decode(MusicSearchQueryParams.self)
+        var url = MusicEnpoint.search.endpoint
+        appendQuery(&url, params: params)
+        let headers = HTTPHeaders(
+            [
             ("Authorization", "Bearer \(token)")
-        ])
+            ])
 
         return client.get(url, headers: headers).flatMap { result in
 
