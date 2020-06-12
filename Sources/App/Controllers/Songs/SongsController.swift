@@ -65,5 +65,26 @@ final class SongsController: RouteCollection {
 
         }
     }
+}
 
+// MARK: - Parse Query parameters
+
+extension SongsController {
+
+    func appendQuery(_ url: inout String, params: MusicSearchQueryParams) {
+        let term = "?term=\(params.term)"
+        let params = "\(term)"
+        url.append(params)
+    }
+}
+
+struct MusicSearchQueryParams: Content {
+    let term: String
+    let limit: Int?
+    let offset: String?
+    let types: [MusicTypes]?
+}
+
+enum MusicTypes: String, Codable {
+    case artists, albums, songs
 }
