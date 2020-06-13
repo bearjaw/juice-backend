@@ -1,6 +1,7 @@
 import Fluent
 import FluentPostgresDriver
 import Vapor
+import JWT
 
 // configures your application
 public func configure(_ app: Application) throws {
@@ -25,4 +26,25 @@ public func configure(_ app: Application) throws {
 
     // register routes
     try routes(app)
+}
+
+extension Environment {
+
+    // service bundle identifier
+    static var amId = Environment.get("AM_ID")!
+
+    // team identifier
+    static var amTeamId = Environment.get("AM_TEAM_ID")!
+
+    // key identifier
+    static var amJWKId = Environment.get("AM_JWK_ID")!
+
+    // contents of the downloaded key file
+    static var amKey = Environment.get("AM_KEY")!
+
+}
+
+extension JWKIdentifier {
+
+    static let appleMusic = JWKIdentifier(string: Environment.amJWKId)
 }

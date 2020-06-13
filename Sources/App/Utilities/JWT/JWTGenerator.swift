@@ -7,6 +7,7 @@
 
 import JWT
 import Foundation
+import Vapor
 
 struct JWTGenerator {
 
@@ -34,12 +35,6 @@ struct JWTGenerator {
             }
         }
 
-//        var signer: JWTSigner {
-//            switch self {
-//            case let .es256(data):
-//                return .init(algorithm: ES256(key: data))
-//            }
-//        }
     }
 
     enum JWTGeneratorError: Error {
@@ -55,35 +50,19 @@ struct JWTGenerator {
     ///   - algorithm: The algorithm used
     /// - Throws: Throws a `JWTGeneratorError` if signing fails
     /// - Returns: The Token as a String
-    static func generateToken(kId: String,
+    static func generatePayload(kId: String,
                               iss: String,
-                              validity: Validity = .day,
-                              algorithm: Algorithm) throws -> String {
+                              validity: Validity = .day) throws -> AppleMusicJWTPayload {
 
-//        JWT.J
+        
         let iat = Date()
         let exp = iat.addingTimeInterval(validity.value).timeIntervalSince1970.rounded()
 
-        let payload = AppleMusicToken(iss: iss,
+        let payload = AppleMusicJWTPayload(iss: iss,
                                       iat: iat.timeIntervalSince1970.rounded(),
                                       exp: exp)
 
-        return ""
+        return payload
     }
     
-}
-
-extension JWTGenerator {
-
-    static func createAppleMusicToken() throws -> String {
-        let pKey = """
-        Load your private key
-        """
-        let data = pKey.data(using: .utf8)!
-        let algorithm = JWTGenerator.Algorithm.es256(data: data)
-        return try JWTGenerator.generateToken(kId: "",
-                                              iss: "",
-                                              algorithm: algorithm)
-
-    }
 }
