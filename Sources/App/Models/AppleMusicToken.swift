@@ -6,6 +6,7 @@
 //
 
 import JWT
+import Foundation
 
 struct AppleMusicToken: JWTPayload {
 

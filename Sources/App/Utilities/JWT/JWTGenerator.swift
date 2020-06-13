@@ -6,6 +6,7 @@
 //
 
 import JWT
+import Foundation
 
 struct JWTGenerator {
 
@@ -33,12 +34,12 @@ struct JWTGenerator {
             }
         }
 
-        var signer: JWTSigner {
-            switch self {
-            case let .es256(data):
-                return .init(algorithm: ES256(key: data))
-            }
-        }
+//        var signer: JWTSigner {
+//            switch self {
+//            case let .es256(data):
+//                return .init(algorithm: ES256(key: data))
+//            }
+//        }
     }
 
     enum JWTGeneratorError: Error {
@@ -59,9 +60,7 @@ struct JWTGenerator {
                               validity: Validity = .day,
                               algorithm: Algorithm) throws -> String {
 
-        let header = JWTHeader(alg: algorithm.string,
-                               kid: kId)
-
+//        JWT.J
         let iat = Date()
         let exp = iat.addingTimeInterval(validity.value).timeIntervalSince1970.rounded()
 

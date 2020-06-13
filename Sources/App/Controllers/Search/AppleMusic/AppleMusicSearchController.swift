@@ -7,8 +7,9 @@
 
 import Crypto
 import Vapor
-import FluentSQLite
+import Fluent
 import MusicCore
+import Logging
 
 extension SongResult: Content {}
 extension Artwork: Content {}
@@ -20,20 +21,15 @@ extension RelationshipData: Content {}
 extension Relationships: Content {}
 extension Song: Content {}
 
-extension Song: Parameter {
-    
-    public static func resolveParameter(_ parameter: String, on container: Container) throws -> String {
-        return parameter
-    }
-
-    public typealias ResolvedParameter = String
-}
-
-final class AppleMusicSearchController: RouteCollection {
+struct AppleMusicSearchController: RouteCollection {
 
     private let formatter = ISO8601DateFormatter()
     private let decoder = JSONDecoder()
-    private var token = ""
+    private let token: String
+
+    init(token: String) {
+        self.token = token
+    }
 
     enum AppleMusicSearchControllerError: Error {
         case notFound
@@ -44,43 +40,39 @@ final class AppleMusicSearchController: RouteCollection {
     /// to use with Apple Music.
     ///
     /// - Parameters:
-    ///   - router: Router to register any new routes to.
-    ///   - token: ES256 encrypted JWT Token
+    ///   - routes: Router to register any new routes to.
     /// - Throws: An error when the token is empty or any route registration fails
-    func boot(router: Router, with token: String) throws {
-        self.token = token
-        try boot(router: router)
+    func boot(routes: RoutesBuilder) throws {
+        let searchGroup = routes.grouped("search")
+        searchGroup.get(use: search)
     }
 
-    func boot(router: Router) throws {
-        router.get(MusicEnpoint.search.rawValue, use: search)
-        router.get(MusicEnpoint.artists.rawValue, use: search)
-    }
+    // MARK: - Search Request
 
-
-    func search(_ req: Request) throws -> Future<[Song]> {
+    func search(_ req: Request) throws -> EventLoopFuture<[Song]> {
         guard token.isNonEmpty else { throw AppleMusicSearchControllerError.missingToken }
 
-        let client = try req.client()
+        let client = req.client
 
         let params = try req.query.decode(MusicSearchQueryParams.self)
         var url = MusicEnpoint.search.endpoint
-        
 
         appendQuery(&url, params: params)
-        let headers = HTTPHeaders([
+
+        let headers = HTTPHeaders(dictionaryLiteral:
             ("Authorization", "Bearer \(token)")
-        ])
+        )
 
-        return client.get(url, headers: headers).flatMap { result in
 
-            self.decoder.dateDecodingStrategy = DateDecoder.decodeDate(using: self.formatter)
-            
-            return try result.content.decode(SongResult.self, using: self.decoder)
-                .map { response in
-                    return response.data
-            }
-
+        let uri = URI(string: url)
+        decoder.dateDecodingStrategy = DateDecoder.decodeDate(using: self.formatter)
+        return client
+            .get(uri, headers: headers)
+            .flatMapThrowing { response in
+                return try response
+                .content
+                .decode(SongResult.self, using: self.decoder)
+                .data
         }
     }
 }

@@ -1,20 +1,10 @@
-import Crypto
+import Fluent
 import Vapor
 
-/// Register your application's routes here.
-public func routes(_ router: Router) throws {
-    // public routes
-    let userController = UserController()
-    router.post("users", use: userController.create)
-    
-    // basic / password auth protected routes
-    let basic = router.grouped(User.basicAuthMiddleware(using: BCryptDigest()))
-    basic.post("login", use: userController.login)
+func routes(_ app: Application) throws {
+    try app.register(collection: TodoController())
 
-    let playlistController = PlaylistController()
-    try playlistController.boot(router: router)
-
-    let songsController = AppleMusicSearchController()
-    let token = try JWTGenerator.createAppleMusicToken()
-    try songsController.boot(router: router, with: token)
+    let token = "Your Apple Music JWT Token here"
+    let controller = AppleMusicSearchController(token: token)
+    try app.register(collection: controller)
 }
