@@ -12,17 +12,17 @@ import XCTest
 class SongsControllerTests: XCTestCase {
 
     func testSongsController_init() throws {
-        XCTAssertNotNil(SongsController())
+        XCTAssertNotNil(AppleMusicSearchController())
     }
 
     func testBoot_registers_routes() {
-        let controller = SongsController()
+        let controller = AppleMusicSearchController()
         let router = EngineRouter.default()
         XCTAssertNoThrow(try controller.boot(router: router))
     }
 
     func testAppendParams_check_search_params() {
-        let controller = SongsController()
+        let controller = AppleMusicSearchController()
         var url = MusicEnpoint.search.endpoint
         let params = MusicSearchQueryParams(term: "Jack+Black", limit: 0, offset: nil, types: nil)
         controller.appendQuery(&url, params: params)
