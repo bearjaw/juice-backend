@@ -23,8 +23,6 @@ extension Song: Content {}
 
 struct AppleMusicSearchController: RouteCollection {
 
-    private let formatter = ISO8601DateFormatter()
-    private let decoder = JSONDecoder()
     private let token: String
 
     init(token: String) {
@@ -63,15 +61,14 @@ struct AppleMusicSearchController: RouteCollection {
             ("Authorization", "Bearer \(token)")
         )
 
-
         let uri = URI(string: url)
-        decoder.dateDecodingStrategy = DateDecoder.decodeDate(using: self.formatter)
+        
         return client
             .get(uri, headers: headers)
             .flatMapThrowing { response in
                 return try response
                 .content
-                .decode(SongResult.self, using: self.decoder)
+                .decode(SongResult.self)
                 .data
         }
     }
