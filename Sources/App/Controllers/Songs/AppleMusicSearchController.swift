@@ -29,34 +29,48 @@ extension Song: Parameter {
     public typealias ResolvedParameter = String
 }
 
-final class SongsController: RouteCollection {
+final class AppleMusicSearchController: RouteCollection {
 
     private let formatter = ISO8601DateFormatter()
     private let decoder = JSONDecoder()
+    private var token = ""
 
-    enum SongsControllerError: Error {
+    enum AppleMusicSearchControllerError: Error {
         case notFound
+        case missingToken
+    }
+
+    /// Boot the Search Contoller an pass in a valid JWT Token
+    /// to use with Apple Music.
+    ///
+    /// - Parameters:
+    ///   - router: Router to register any new routes to.
+    ///   - token: ES256 encrypted JWT Token
+    /// - Throws: An error when the token is empty or any route registration fails
+    func boot(router: Router, with token: String) throws {
+        self.token = token
+        try boot(router: router)
     }
 
     func boot(router: Router) throws {
-//        let bearer = router.grouped(User.tokenAuthMiddleware())
         router.get(MusicEnpoint.search.rawValue, use: search)
         router.get(MusicEnpoint.artists.rawValue, use: search)
     }
 
 
     func search(_ req: Request) throws -> Future<[Song]> {
+        guard token.isNonEmpty else { throw AppleMusicSearchControllerError.missingToken }
 
         let client = try req.client()
-        let token = "Insert Your JWT Token here"
 
         let params = try req.query.decode(MusicSearchQueryParams.self)
         var url = MusicEnpoint.search.endpoint
+        
+
         appendQuery(&url, params: params)
-        let headers = HTTPHeaders(
-            [
+        let headers = HTTPHeaders([
             ("Authorization", "Bearer \(token)")
-            ])
+        ])
 
         return client.get(url, headers: headers).flatMap { result in
 
@@ -65,7 +79,7 @@ final class SongsController: RouteCollection {
             return try result.content.decode(SongResult.self, using: self.decoder)
                 .map { response in
                     return response.data
-                }
+            }
 
         }
     }
@@ -73,7 +87,7 @@ final class SongsController: RouteCollection {
 
 // MARK: - Parse Query parameters
 
-extension SongsController {
+extension AppleMusicSearchController {
 
     func appendQuery(_ url: inout String, params: MusicSearchQueryParams) {
         let term = "?term=\(params.term)"
