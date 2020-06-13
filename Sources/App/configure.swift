@@ -15,6 +15,13 @@ public func configure(_ app: Application) throws {
     ), as: .psql)
 
     app.migrations.add(CreateTodo())
+    let decoder = JSONDecoder()
+    let formatter = ISO8601DateFormatter()
+    formatter.formatOptions = [.withInternetDateTime,
+                               .withDashSeparatorInDate,
+                               .withColonSeparatorInTimeZone]
+    decoder.dateDecodingStrategy = DateDecoder.decodeDate(using: formatter)
+    ContentConfiguration.global.use(decoder: decoder, for: .json)
 
     // register routes
     try routes(app)
