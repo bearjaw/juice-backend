@@ -8,7 +8,7 @@
 import JWT
 import Foundation
 
-struct AppleMusicToken: JWTPayload {
+struct AppleMusicJWTPayload: JWTPayload {
 
     let iss: String
 
