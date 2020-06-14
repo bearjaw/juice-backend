@@ -44,15 +44,13 @@ struct JWTGenerator {
     /// Genrate a JWT Token
     ///
     /// - Parameters:
-    ///   - kId: The key ID
     ///   - iss: The token issuer id
     ///   - validity: The period the token should stay valid
     ///   - algorithm: The algorithm used
     /// - Throws: Throws a `JWTGeneratorError` if signing fails
     /// - Returns: The Token as a String
-    static func generatePayload(kId: String,
-                              iss: String,
-                              validity: Validity = .day) throws -> AppleMusicJWTPayload {
+    static func generatePayload(iss: String,
+                                validity: Validity = .day) throws -> AppleMusicJWTPayload {
 
         
         let iat = Date()
@@ -65,4 +63,28 @@ struct JWTGenerator {
         return payload
     }
     
+}
+
+extension JWTGenerator {
+
+    static func generateAppleMusicToken(using app: Application,
+                              from payload: AppleMusicJWTPayload,
+                              kid: JWKIdentifier? = nil) throws -> String {
+        return try app.jwt.signers.sign(payload, kid: kid)
+    }
+
+    static func registerAppleMusicSigner(using app: Application) throws {
+        let privateKey = try String(contentsOfFile: app.directory.workingDirectory + "ES256_key.p8")
+
+        let signer = JWTSigner.es256(key: try .private(pem: privateKey.bytes))
+
+        app.jwt.signers.use(signer, kid: .appleMusic)
+    }
+
+    static func generateAppleMusicToken(using app: Application) throws -> String {
+        let payload = try JWTGenerator.generatePayload(iss: Environment.amTeamId)
+
+        return try JWTGenerator.generateAppleMusicToken(using: app, from: payload, kid: .appleMusic)
+    }
+
 }
