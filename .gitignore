@@ -90,3 +90,6 @@ fastlane/test_output
 iOSInjectionProject/
 .DS_Store
 juice.xcodeproj/GeneratedModuleMap
+workingDirectory/.env
+workingDirectory/.env.development
+workingDirectory/ES256_key.p8
