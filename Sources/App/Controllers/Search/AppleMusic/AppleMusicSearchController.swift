@@ -83,8 +83,15 @@ extension AppleMusicSearchController {
 
     func appendQuery(_ url: inout String, params: MusicSearchQueryParams) {
         let term = "?term=\(params.term)"
-        let params = "\(term)"
-        url.append(params)
+        url.append(term)
+        if let types = params.types,
+            types.isNonEmpty,
+            let first = types.first {
+            let typesString = types
+                .dropFirst()
+                .reduce(into: "\(first.rawValue)", { $0 = "\($0)," + $1.rawValue })
+            url.append("&types=\(typesString)")
+        }
     }
 }
 
