@@ -27,6 +27,8 @@ struct AppleMusicSearchController: RouteCollection {
 
     private let token: String
 
+    private let defaultLimit = "10"
+
     init(token: String) {
         self.token = token
     }
@@ -34,6 +36,8 @@ struct AppleMusicSearchController: RouteCollection {
     enum AppleMusicSearchControllerError: Error {
         case notFound
         case missingToken
+        case noTermProvided
+        case invalidURL
     }
 
     /// Boot the Search Contoller an pass in a valid JWT Token
@@ -57,15 +61,17 @@ struct AppleMusicSearchController: RouteCollection {
         let client = req.client
 
         let params = try req.query.decode(MusicSearchQueryParams.self)
-        var url = MusicEnpoint.search.endpoint
+        let urlString = MusicEnpoint.search.endpoint
 
-        appendQuery(&url, params: params)
+        guard let url = try createQueryURL(urlString, params: params) else {
+            throw AppleMusicSearchControllerError.invalidURL
+        }
 
         let headers = HTTPHeaders(dictionaryLiteral:
             ("Authorization", "Bearer \(token)")
         )
 
-        let uri = URI(string: url)
+        let uri = URI(string: url.absoluteString)
         
         return client
             .get(uri, headers: headers)
@@ -81,17 +87,36 @@ struct AppleMusicSearchController: RouteCollection {
 
 extension AppleMusicSearchController {
 
-    func appendQuery(_ url: inout String, params: MusicSearchQueryParams) {
-        let term = "?term=\(params.term)".replacingOccurrences(of: " ", with: "+")
-        url.append(term)
+    func createQueryURL(_ url: String, params: MusicSearchQueryParams) throws -> URL? {
+        let term = params.term
+        var query: [URLQueryItem] = []
+        guard term.isNonEmpty else { throw AppleMusicSearchControllerError.noTermProvided }
+        query.append(
+            URLQueryItem(name: "term", value: term)
+        )
+
         if let types = params.types,
             types.isNonEmpty,
             let first = types.first {
             let typesString = types
                 .dropFirst()
                 .reduce(into: "\(first.rawValue)", { $0 = "\($0)," + $1.rawValue })
-            url.append("&types=\(typesString)")
+            query.append(
+                URLQueryItem(name: "types", value: typesString)
+            )
         }
+        let limit = params.limit == nil ? defaultLimit : "\(params.limit!)"
+        query.append(
+            URLQueryItem(name: "limit", value: limit)
+        )
+
+        query.append(
+            URLQueryItem(name: "offset", value: params.offset)
+        )
+
+        var urlComps = URLComponents(string: url)
+        urlComps?.queryItems = query
+        return urlComps?.url
     }
 }
 
