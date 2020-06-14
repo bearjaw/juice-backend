@@ -39,9 +39,6 @@ extension Environment {
     // key identifier
     static var amJWKId = Environment.get("AM_JWK_ID")!
 
-    // contents of the downloaded key file
-    static var amKey = Environment.get("AM_KEY")!
-
 }
 
 extension JWKIdentifier {
