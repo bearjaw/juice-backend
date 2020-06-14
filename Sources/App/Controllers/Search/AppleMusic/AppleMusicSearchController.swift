@@ -82,7 +82,7 @@ struct AppleMusicSearchController: RouteCollection {
 extension AppleMusicSearchController {
 
     func appendQuery(_ url: inout String, params: MusicSearchQueryParams) {
-        let term = "?term=\(params.term)"
+        let term = "?term=\(params.term)".replacingOccurrences(of: " ", with: "+")
         url.append(term)
         if let types = params.types,
             types.isNonEmpty,
