@@ -11,15 +11,17 @@ import Fluent
 import MusicCore
 import Logging
 
-extension SongResult: Content {}
+extension ResponseRoot: Content {}
 extension Artwork: Content {}
-extension Attributes: Content {}
+extension Resource.Attributes: Content {}
 extension PlayParam: Content {}
 extension Preview: Content {}
 extension Relationship: Content {}
 extension RelationshipData: Content {}
-extension Relationships: Content {}
-extension Song: Content {}
+extension Resource.Relationships: Content {}
+extension Resource: Content {}
+extension ResponseRoot.Results: Content {}
+extension AppleMusicError: Content {}
 
 struct AppleMusicSearchController: RouteCollection {
 
@@ -29,7 +31,7 @@ struct AppleMusicSearchController: RouteCollection {
         self.token = token
     }
 
-    enum AppleMusicSearchControllerError: Error {
+    enum AppleMusicSearchControllerError: Swift.Error {
         case notFound
         case missingToken
     }
@@ -47,7 +49,7 @@ struct AppleMusicSearchController: RouteCollection {
 
     // MARK: - Search Request
 
-    func search(_ req: Request) throws -> EventLoopFuture<[Song]> {
+    func search(_ req: Request) throws -> EventLoopFuture<ResponseRoot> {
         guard token.isNonEmpty else { throw AppleMusicSearchControllerError.missingToken }
 
         let client = req.client
@@ -68,8 +70,7 @@ struct AppleMusicSearchController: RouteCollection {
             .flatMapThrowing { response in
                 return try response
                 .content
-                .decode(SongResult.self)
-                .data
+                .decode(ResponseRoot.self)
         }
     }
 }
