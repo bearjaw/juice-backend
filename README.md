@@ -31,7 +31,7 @@ If you are using Xcode you need to add a custom working directory for the `juice
 
 Vapor supports `.env`, `.env.development`, and custom environments for storing data. 
 
-⚠️ **Never check in your sensitive data like password or keys into your git repository.** ⚠️ 
+⚠️ **Never check sensitive data like passwords or keys into your git repository.** ⚠️ 
 
 Be safe and add all `.env` files to your gitignore to avoid checking in any secrets.
 
