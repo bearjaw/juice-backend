@@ -105,14 +105,24 @@ extension AppleMusicSearchController {
                 URLQueryItem(name: "types", value: typesString)
             )
         }
-        let limit = params.limit == nil ? defaultLimit : "\(params.limit!)"
-        query.append(
-            URLQueryItem(name: "limit", value: limit)
-        )
 
-        query.append(
-            URLQueryItem(name: "offset", value: params.offset)
-        )
+        if let limit = params.limit {
+            query.append(
+                URLQueryItem(name: "limit", value: "\(limit)")
+            )
+        } else {
+            query.append(
+                URLQueryItem(name: "limit", value: defaultLimit)
+            )
+        }
+
+
+        if let offset = params.offset {
+            query.append(
+                URLQueryItem(name: "offset", value: offset)
+            )
+        }
+
 
         var urlComps = URLComponents(string: url)
         urlComps?.queryItems = query
