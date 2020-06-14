@@ -31,7 +31,7 @@ struct AppleMusicSearchController: RouteCollection {
         self.token = token
     }
 
-    enum AppleMusicSearchControllerError: Swift.Error {
+    enum AppleMusicSearchControllerError: Error {
         case notFound
         case missingToken
     }
@@ -43,6 +43,8 @@ struct AppleMusicSearchController: RouteCollection {
     ///   - routes: Router to register any new routes to.
     /// - Throws: An error when the token is empty or any route registration fails
     func boot(routes: RoutesBuilder) throws {
+        guard token.isNonEmpty else { throw AppleMusicSearchControllerError.missingToken }
+        
         let searchGroup = routes.grouped("search")
         searchGroup.get(use: search)
     }
