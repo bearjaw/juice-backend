@@ -116,13 +116,11 @@ extension AppleMusicSearchController {
             )
         }
 
-
         if let offset = params.offset {
             query.append(
                 URLQueryItem(name: "offset", value: offset)
             )
         }
-
 
         var urlComps = URLComponents(string: url)
         urlComps?.queryItems = query
