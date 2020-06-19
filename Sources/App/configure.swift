@@ -16,6 +16,9 @@ public func configure(_ app: Application) throws {
     ), as: .psql)
 
     app.migrations.add(CreateTodo())
+    app.migrations.add(CreateSong())
+    app.migrations.add(CreatePlaylist())
+    
     let decoder = JSONDecoder()
     let formatter = ISO8601DateFormatter()
     formatter.formatOptions = [.withInternetDateTime,
