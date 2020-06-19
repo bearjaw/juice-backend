@@ -17,6 +17,7 @@ struct CreateSong: Migration {
             .field("title", .string, .required)
             .field("artist", .string, .required)
             .field("album", .string)
+            .field("apple_music_id", .string)
             .create()
     }
 

@@ -17,6 +17,7 @@ struct CreatePlaylist: Migration {
             .field("title", .string, .required)
             .field("description", .string)
             .field("items", .array(of: .uuid))
+            .field("apple_music_id", .string)
             .create()
     }
 

@@ -25,15 +25,20 @@ final class Song: Model, Content {
     @Field(key: "album")
     var album: String?
 
+    @Field(key: "apple_music_id")
+    var appleMusicId: String?
+
     init() { }
 
     init(id: UUID? = nil,
          title: String,
          artist: String,
-         album: String? = nil) {
+         album: String? = nil,
+         appleMusicId: String?) {
         self.id = id
         self.title = title
         self.artist = artist
         self.album = album
+        self.appleMusicId = appleMusicId
     }
 }
