@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum MusicEnpoint: String {
+enum MusicEndpoint: String {
 
     case activity
     case albums
@@ -30,8 +30,8 @@ enum MusicEnpoint: String {
     static let version = "v1"
 
     var endpoint: String {
-        let baseURL = "\(MusicEnpoint.base)/\(MusicEnpoint.version)/"
-        return "\(baseURL)\(MusicEnpoint.catalog.rawValue)/us/\(self.rawValue)"
+        let baseURL = "\(MusicEndpoint.base)/\(MusicEndpoint.version)/"
+        return "\(baseURL)\(MusicEndpoint.catalog.rawValue)/us/\(self.rawValue)"
     }
 
 }

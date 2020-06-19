@@ -18,7 +18,7 @@ class AppleMusicSearchControllerTests: XCTestCase {
     func testAppendParams_check_search_params() {
 
         let controller = AppleMusicSearchController(token: "JWT")
-        let urlString = MusicEnpoint.search.endpoint
+        let urlString = MusicEndpoint.search.endpoint
         var params = MusicSearchQueryParams(term: "Jack+Black",
                                             limit: nil,
                                             offset: nil,
@@ -26,7 +26,7 @@ class AppleMusicSearchControllerTests: XCTestCase {
 
         var got = try! controller.createQueryURL(urlString, params: params)?.absoluteString
 
-        var expectedURL = "\(MusicEnpoint.search.endpoint)?term=Jack+Black&limit=10"
+        var expectedURL = "\(MusicEndpoint.search.endpoint)?term=Jack+Black&limit=10"
 
         XCTAssertEqual(expectedURL, got,  failed(got as Any, expectedURL))
 
@@ -36,14 +36,14 @@ class AppleMusicSearchControllerTests: XCTestCase {
                                         types: [.albums, .artists])
 
         got = try! controller.createQueryURL(urlString, params: params)?.absoluteString
-        expectedURL = "\(MusicEnpoint.search.endpoint)?term=Jack+Black&types=albums,artists&limit=20"
+        expectedURL = "\(MusicEndpoint.search.endpoint)?term=Jack+Black&types=albums,artists&limit=20"
 
         XCTAssertEqual(expectedURL, got, failed(got as Any, expectedURL))
     }
 
     func testAppendParams_check_search_params_throws() {
         let controller = AppleMusicSearchController(token: "JWT")
-        let url = MusicEnpoint.search.endpoint
+        let url = MusicEndpoint.search.endpoint
         let params = MusicSearchQueryParams(term: "",
                                             limit: 0,
                                             offset: nil,

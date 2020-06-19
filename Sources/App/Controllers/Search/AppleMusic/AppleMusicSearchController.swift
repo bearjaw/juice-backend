@@ -46,7 +46,7 @@ struct AppleMusicSearchController: RouteCollection {
         let client = req.client
 
         let params = try req.query.decode(MusicSearchQueryParams.self)
-        let urlString = MusicEnpoint.search.endpoint
+        let urlString = MusicEndpoint.search.endpoint
 
         guard let url = try createQueryURL(urlString, params: params) else {
             throw CommonAPIError.invalidURL
