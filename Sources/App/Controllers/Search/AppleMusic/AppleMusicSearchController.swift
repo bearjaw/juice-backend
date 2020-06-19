@@ -34,10 +34,7 @@ struct AppleMusicSearchController: RouteCollection {
     }
 
     enum AppleMusicSearchControllerError: Error {
-        case notFound
-        case missingToken
         case noTermProvided
-        case invalidURL
     }
 
     /// Boot the Search Contoller an pass in a valid JWT Token
@@ -47,7 +44,7 @@ struct AppleMusicSearchController: RouteCollection {
     ///   - routes: Router to register any new routes to.
     /// - Throws: An error when the token is empty or any route registration fails
     func boot(routes: RoutesBuilder) throws {
-        guard token.isNonEmpty else { throw AppleMusicSearchControllerError.missingToken }
+        guard token.isNonEmpty else { throw CommonAPIError.missingToken }
         
         let searchGroup = routes.grouped("search")
         searchGroup.get(use: search)
@@ -56,7 +53,7 @@ struct AppleMusicSearchController: RouteCollection {
     // MARK: - Search Request
 
     func search(_ req: Request) throws -> EventLoopFuture<ResponseRoot> {
-        guard token.isNonEmpty else { throw AppleMusicSearchControllerError.missingToken }
+        guard token.isNonEmpty else { throw CommonAPIError.missingToken }
 
         let client = req.client
 
@@ -64,7 +61,7 @@ struct AppleMusicSearchController: RouteCollection {
         let urlString = MusicEnpoint.search.endpoint
 
         guard let url = try createQueryURL(urlString, params: params) else {
-            throw AppleMusicSearchControllerError.invalidURL
+            throw CommonAPIError.invalidURL
         }
 
         let headers = HTTPHeaders(dictionaryLiteral:
