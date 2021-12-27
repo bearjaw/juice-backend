@@ -14,7 +14,7 @@ extension Resource.Attributes: Content {}
 extension PlayParam: Content {}
 extension Preview: Content {}
 extension Relationship: Content {}
-extension RelationshipData: Content {}
+//extension RelationshipData: Content {}
 extension Resource.Relationships: Content {}
 extension Resource: Content {}
 extension ResponseRoot.Results: Content {}
