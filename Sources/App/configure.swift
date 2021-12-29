@@ -9,13 +9,17 @@ import Vapor
 public func configure(_ app: Application) throws {
     // uncomment to serve files from /Public folder
 
+    app.logger.logLevel =  app.environment.isRelease ? .info : .debug
+
     app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
+
+    app.views.use(.leaf)
+
     app.leaf.sources = .singleSource(NIOLeafFiles(fileio: app.fileio,
                                                   limits: .default,
                                                   sandboxDirectory: app.leaf.configuration.rootDirectory,
                                                   viewDirectory: app.leaf.configuration.rootDirectory,
                                                   defaultExtension: "html"))
-    app.views.use(.leaf)
 
     app.databases.use(.postgres(
         hostname: Environment.get("DATABASE_HOST") ?? "localhost",
