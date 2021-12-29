@@ -35,7 +35,7 @@ struct PlaylistRouter: RouteCollection {
         playlistsGroup.post(use: create)
         playlistsGroup.patch(use: update)
         playlistsGroup.delete(use: delete)
-        routes.get(use: controller.homeView)
+        routes.get("playlists", use: controller.homeView)
     }
 
     func index(_ req: Request) throws -> HTTPStatus {
