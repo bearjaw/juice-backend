@@ -15,7 +15,7 @@ let package = Package(
         .package(url: "https://github.com/vapor/jwt.git", from: "4.0.0"),
         .package(url: "https://github.com/johnsundell/Plot.git", from: "0.7.0"),
         .package(url: "https://github.com/vapor/leaf", from: "4.0.0"),
-            .package(url: "https://github.com/vapor/leaf-kit", from: "1.0.0")
+        .package(url: "https://github.com/vapor/leaf-kit", from: "1.0.0")
     ],
     targets: [
         .target(

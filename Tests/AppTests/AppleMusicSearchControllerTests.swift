@@ -11,20 +11,20 @@ import XCTest
 
 class AppleMusicSearchControllerTests: XCTestCase {
 
-    func testSongsController_init() throws {
-        XCTAssertNotNil(AppleMusicSearchController(token: "JWT"))
+    func testSongsRouter_init() throws {
+        XCTAssertNotNil(AppleMusicSearchRouter(token: "JWT"))
     }
 
     func testAppendParams_check_search_params() {
 
-        let controller = AppleMusicSearchController(token: "JWT")
+        let router = AppleMusicSearchRouter(token: "JWT")
         let urlString = MusicEndpoint.search.endpoint
         var params = MusicSearchQueryParams(term: "Jack+Black",
                                             limit: nil,
                                             offset: nil,
                                             types: nil)
 
-        var got = try! controller.createQueryURL(urlString, params: params)?.absoluteString
+        var got = try! router.createQueryURL(urlString, params: params)?.absoluteString
 
         var expectedURL = "\(MusicEndpoint.search.endpoint)?term=Jack+Black&limit=10"
 
@@ -35,24 +35,24 @@ class AppleMusicSearchControllerTests: XCTestCase {
                                         offset: nil,
                                         types: [.albums, .artists])
 
-        got = try! controller.createQueryURL(urlString, params: params)?.absoluteString
+        got = try! router.createQueryURL(urlString, params: params)?.absoluteString
         expectedURL = "\(MusicEndpoint.search.endpoint)?term=Jack+Black&types=albums,artists&limit=20"
 
         XCTAssertEqual(expectedURL, got, failed(got as Any, expectedURL))
     }
 
     func testAppendParams_check_search_params_throws() {
-        let controller = AppleMusicSearchController(token: "JWT")
+        let router = AppleMusicSearchRouter(token: "JWT")
         let url = MusicEndpoint.search.endpoint
         let params = MusicSearchQueryParams(term: "",
                                             limit: 0,
                                             offset: nil,
                                             types: nil)
 
-        XCTAssertThrowsError(try controller.createQueryURL(url, params: params),
+        XCTAssertThrowsError(try router.createQueryURL(url, params: params),
                              "Should Throw because term is empty") { error in
-                                XCTAssertEqual(AppleMusicSearchController
-                                    .AppleMusicSearchControllerError
+                                XCTAssertEqual(AppleMusicSearchRouter
+                                    .AppleMusicSearchRouterError
                                     .noTermProvided
                                     .localizedDescription,
                                                error
@@ -61,7 +61,7 @@ class AppleMusicSearchControllerTests: XCTestCase {
     }
 
     static let allTests = [
-        ("testSongsController_init", testSongsController_init),
+        ("testSongsController_init", testSongsRouter_init),
         ("testAppendParams_check_search_params", testAppendParams_check_search_params)
     ]
 }

@@ -4,17 +4,18 @@ import Vapor
 
 func routes(_ app: Application) throws {
 
-    try app.register(collection: TodoController())
-
     try JWTGenerator.registerAppleMusicSigner(using: app)
 
     let token = try JWTGenerator.generateAppleMusicToken(using: app)
 
-    let search = AppleMusicSearchController(token: token)
+    let home = HomeRouter()
+
+    let search = AppleMusicSearchRouter(token: token)
     
-    let playlist = PlaylistController(token: token)
+    let playlist = PlaylistRouter(token: token)
 
     try app.register(collections: [
+        home,
         search,
         playlist
     ])

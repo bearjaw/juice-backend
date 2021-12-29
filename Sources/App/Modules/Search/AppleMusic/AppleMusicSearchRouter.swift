@@ -1,27 +1,29 @@
 //
-//  SongsController.swift
+//  File.swift
 //  
 //
-//  Created by Max Baumbach on 08/06/2020.
+//  Created by Max Baumbach on 29/12/2021.
 //
 
 import Crypto
-import Vapor
 import Fluent
-import MusicCore
 import Logging
+import MusicCore
+import Vapor
 
-struct AppleMusicSearchController: RouteCollection {
+struct AppleMusicSearchRouter: RouteCollection {
 
     private let token: String
 
     private let defaultLimit = "10"
 
+    let controller = AppleMusicSearchController()
+
     init(token: String) {
         self.token = token
     }
 
-    enum AppleMusicSearchControllerError: Error {
+    enum AppleMusicSearchRouterError: Error {
         case noTermProvided
     }
 
@@ -33,7 +35,7 @@ struct AppleMusicSearchController: RouteCollection {
     /// - Throws: An error when the token is empty or any route registration fails
     func boot(routes: RoutesBuilder) throws {
         guard token.isNonEmpty else { throw CommonAPIError.missingToken }
-        
+
         let searchGroup = routes.grouped("search")
         searchGroup.get(use: search)
     }
@@ -53,36 +55,36 @@ struct AppleMusicSearchController: RouteCollection {
         }
 
         let headers = HTTPHeaders(dictionaryLiteral:
-            ("Authorization", "Bearer \(token)")
+                                    ("Authorization", "Bearer \(token)")
         )
 
         let uri = URI(string: url.absoluteString)
-        
+
         return client
             .get(uri, headers: headers)
             .flatMapThrowing { response in
                 return try response
-                .content
-                .decode(ResponseRoot.self)
-        }
+                    .content
+                    .decode(ResponseRoot.self)
+            }
     }
 }
 
 // MARK: - Parse Query parameters
 
-extension AppleMusicSearchController {
+extension AppleMusicSearchRouter {
 
     func createQueryURL(_ url: String, params: MusicSearchQueryParams) throws -> URL? {
         let term = params.term
         var query: [URLQueryItem] = []
-        guard term.isNonEmpty else { throw AppleMusicSearchControllerError.noTermProvided }
+        guard term.isNonEmpty else { throw AppleMusicSearchRouterError.noTermProvided }
         query.append(
             URLQueryItem(name: "term", value: term)
         )
 
         if let types = params.types,
-            types.isNonEmpty,
-            let first = types.first {
+           types.isNonEmpty,
+           let first = types.first {
             let typesString = types
                 .dropFirst()
                 .reduce(into: "\(first.rawValue)", { $0 = "\($0)," + $1.rawValue })
@@ -111,15 +113,4 @@ extension AppleMusicSearchController {
         urlComps?.queryItems = query
         return urlComps?.url
     }
-}
-
-struct MusicSearchQueryParams: Content {
-    let term: String
-    let limit: Int?
-    let offset: String?
-    let types: [MusicTypes]?
-}
-
-enum MusicTypes: String, Codable {
-    case artists, albums, songs
 }

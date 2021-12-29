@@ -1,19 +1,19 @@
 //
-//  PlaylistController.swift
+//  HomeRouter.swift
 //  
 //
-//  Created by Max Baumbach on 19/06/2020.
+//  Created by Max Baumbach on 28/12/2021.
 //
 
-import Foundation
 import Vapor
-import MusicCore
 
-struct PlaylistController: RouteCollection {
+struct PlaylistRouter: RouteCollection {
+
+    let controller = PlaylistController()
 
     private let token: String
 
-    /// Initialize the playlist controller with a JWT Token
+    /// Initialize the playlist router with a JWT Token
     /// required for authenticated Apple Music Requests
     ///
     /// - Parameter token: a JWT Token
@@ -35,6 +35,7 @@ struct PlaylistController: RouteCollection {
         playlistsGroup.post(use: create)
         playlistsGroup.patch(use: update)
         playlistsGroup.delete(use: delete)
+        routes.get(use: controller.homeView)
     }
 
     func index(_ req: Request) throws -> HTTPStatus {
@@ -43,9 +44,9 @@ struct PlaylistController: RouteCollection {
     }
 
     func create(_ req: Request) throws -> HTTPStatus {
-          guard token.isNonEmpty else { throw CommonAPIError.missingToken }
+        guard token.isNonEmpty else { throw CommonAPIError.missingToken }
 
-          return .notImplemented
+        return .notImplemented
     }
 
     func update(_ req: Request) throws -> HTTPStatus {
@@ -61,3 +62,4 @@ struct PlaylistController: RouteCollection {
     }
 
 }
+

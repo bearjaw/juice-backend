@@ -1,12 +1,21 @@
+import JWT
 import Fluent
 import FluentPostgresDriver
+import LeafKit
+import Leaf
 import Vapor
-import JWT
 
 // configures your application
 public func configure(_ app: Application) throws {
     // uncomment to serve files from /Public folder
-    // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
+
+    app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
+    app.leaf.sources = .singleSource(NIOLeafFiles(fileio: app.fileio,
+                                                  limits: .default,
+                                                  sandboxDirectory: app.leaf.configuration.rootDirectory,
+                                                  viewDirectory: app.leaf.configuration.rootDirectory,
+                                                  defaultExtension: "html"))
+    app.views.use(.leaf)
 
     app.databases.use(.postgres(
         hostname: Environment.get("DATABASE_HOST") ?? "localhost",
@@ -14,6 +23,7 @@ public func configure(_ app: Application) throws {
         password: Environment.get("DATABASE_PASSWORD") ?? "vapor_password",
         database: Environment.get("DATABASE_NAME") ?? "vapor_database"
     ), as: .psql)
+
 
     app.migrations.add(CreateTodo())
     app.migrations.add(CreateSong())

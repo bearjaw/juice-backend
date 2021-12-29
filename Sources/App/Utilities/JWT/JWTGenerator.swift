@@ -25,18 +25,6 @@ struct JWTGenerator {
         }
     }
 
-    enum Algorithm {
-        case es256(data: Data)
-
-        var string: String {
-            switch self {
-            case .es256:
-                return "ES256"
-            }
-        }
-
-    }
-
     enum JWTGeneratorError: Error {
         case signing
     }
@@ -46,7 +34,6 @@ struct JWTGenerator {
     /// - Parameters:
     ///   - iss: The token issuer id
     ///   - validity: The period the token should stay valid
-    ///   - algorithm: The algorithm used
     /// - Throws: Throws a `JWTGeneratorError` if signing fails
     /// - Returns: The Token as a String
     static func generatePayload(iss: String,
@@ -74,7 +61,7 @@ extension JWTGenerator {
     }
 
     static func registerAppleMusicSigner(using app: Application) throws {
-        let privateKey = try String(contentsOfFile: app.directory.workingDirectory + "ES256_key.p8")
+        let privateKey = try String(contentsOfFile: app.directory.workingDirectory + "Secrets/" + "ES256_key.p8")
 
         let signer = JWTSigner.es256(key: try .private(pem: privateKey.bytes))
 
