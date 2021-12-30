@@ -14,13 +14,11 @@ struct PlaylistController {
     // MARK: - View
 
     func homeView(req: Request) throws -> EventLoopFuture<View> {
-        return req.application.leaf.renderer.render(path: "index", context: [
-            "title": .string("Juice - Playlist"),
-            "header": .string("Hi there, "),
-            "message": .string("welcome to my awesome page!")
-        ]).map { v in
-            return View(data: v)
-        }
+        return req.render("index", [
+            "title": "Juice - Playlist",
+            "header": "Hi there, ",
+            "message": "welcome to my awesome page!"
+        ])
     }
 
 }

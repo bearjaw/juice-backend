@@ -11,13 +11,16 @@ import Vapor
 struct HomeController {
 
     func homeView(req: Request) throws -> EventLoopFuture<View> {
-        return req.application.leaf.renderer.render(path: "index", context: [
-            "title": .string("Juice - Home"),
-            "header": .string("Hi there, "),
-            "message": .string("welcome to my awesome page!")
-        ]).map { v in
-            return View(data: v)
-        }
+        let context = ViewContext(title: "Juice - Home", header: "Hi there, ", message: "welcome to my awesome page!")
+        return req.render("index", context)
     }
+
+}
+
+
+fileprivate struct ViewContext: Encodable {
+    let title: String
+    let header: String
+    let message: String
 
 }
