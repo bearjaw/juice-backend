@@ -14,6 +14,6 @@ struct HomeRouter: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
         print("yoo")
 
-        routes.get(use: controller.homeView)
+//        routes.get(use: controller.homeView)
     }
 }

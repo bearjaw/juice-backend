@@ -4,30 +4,28 @@ import PackageDescription
 let package = Package(
     name: "juice-backend",
     platforms: [
-       .macOS(.v10_15)
+        .macOS(.v10_15)
     ],
     dependencies: [
         // 💧 A server-side Swift web framework.
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
-        .package(url: "https://github.com/vapor/fluent.git", from: "4.0.0"),
-        .package(url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.0.0"),
-        .package(url: "https://github.com/bearjaw/MusicCore.git", from: "1.1.0"),
-        .package(url: "https://github.com/vapor/jwt.git", from: "4.0.0"),
-        .package(url: "https://github.com/johnsundell/Plot.git", from: "0.7.0"),
-        .package(url: "https://github.com/vapor/leaf", from: "4.0.0"),
-        .package(url: "https://github.com/vapor/leaf-kit", from: "1.0.0")
+        .package(url: "https://github.com/vapor/vapor", from: "4.54.4"),
+        .package(url: "https://github.com/bearjaw/MusicCore", from: "1.1.0"),
+        .package(url: "https://github.com/vapor/jwt", from: "4.2.0"),
+        .package(url: "https://github.com/binarybirds/swift-html", from: "1.2.0"),
+        .package(url: "https://github.com/vapor/fluent", from: "4.4.0"),
+        .package(url: "https://github.com/vapor/fluent-sqlite-driver", from: "4.1.0")
     ],
     targets: [
         .target(
             name: "App",
             dependencies: [
                 .product(name: "JWT", package: "jwt"),
-                .product(name: "Fluent", package: "fluent"),
-                .product(name: "FluentPostgresDriver", package: "fluent-postgres-driver"),
                 .product(name: "MusicCore", package: "MusicCore"),
                 .product(name: "Vapor", package: "vapor"),
-                .product(name: "Leaf", package: "Leaf"),
-                "Plot"
+                .product(name: "SwiftHtml", package: "swift-html"),
+                .product(name: "SwiftSvg", package: "swift-html"),
+                .product(name: "Fluent", package: "fluent"),
+                .product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
             ],
             swiftSettings: [
                 // Enable better optimizations when building in Release configuration. Despite the use of

@@ -1,8 +1,6 @@
 import JWT
 import Fluent
-import FluentPostgresDriver
-import LeafKit
-import Leaf
+import FluentSQLiteDriver
 import Vapor
 
 // configures your application
@@ -13,32 +11,25 @@ public func configure(_ app: Application) throws {
 
     app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
 
-    app.views.use(.leaf)
-
-    app.leaf.sources = .singleSource(NIOLeafFiles(fileio: app.fileio,
-                                                  limits: .default,
-                                                  sandboxDirectory: app.leaf.configuration.rootDirectory,
-                                                  viewDirectory: app.leaf.configuration.rootDirectory,
-                                                  defaultExtension: "html"))
-
-    app.databases.use(.postgres(
-        hostname: Environment.get("DATABASE_HOST") ?? "localhost",
-        username: Environment.get("DATABASE_USERNAME") ?? "vapor_username",
-        password: Environment.get("DATABASE_PASSWORD") ?? "vapor_password",
-        database: Environment.get("DATABASE_NAME") ?? "vapor_database"
-    ), as: .psql)
+//    app.databases.use(.sqlite(
+//        hostname: Environment.get("DATABASE_HOST") ?? "localhost",
+//        username: Environment.get("DATABASE_USERNAME") ?? "vapor_username",
+//        password: Environment.get("DATABASE_PASSWORD") ?? "vapor_password",
+//        database: Environment.get("DATABASE_NAME") ?? "vapor_database"
+//    ), as: .sqlite)
 
 
     app.migrations.add(CreateTodo())
     app.migrations.add(CreateSong())
     app.migrations.add(CreatePlaylist())
-    
+
     let decoder = JSONDecoder()
     let formatter = ISO8601DateFormatter()
     formatter.formatOptions = [.withInternetDateTime,
                                .withDashSeparatorInDate,
                                .withColonSeparatorInTimeZone]
     decoder.dateDecodingStrategy = DateDecoder.decodeDate(using: formatter)
+    
     ContentConfiguration.global.use(decoder: decoder, for: .json)
 
     // register routes
