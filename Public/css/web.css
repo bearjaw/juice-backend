@@ -1,0 +1,29 @@
+#playlist h2 {
+    margin: 0.5rem 0;
+}
+
+#navigation {
+    background-color: #124559;
+    position: center;
+    padding: 16px;
+}
+
+.search {
+    display: flex;
+}
+
+.default-background {
+    background-color: #01161E
+}
+
+h1 {
+    color: #AEC3B0;
+}
+
+.menu-items a {
+    color: white;
+}
+
+.detail-text {
+    color: #EFF6E0;
+}

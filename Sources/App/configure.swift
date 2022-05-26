@@ -5,11 +5,14 @@ import Vapor
 
 // configures your application
 public func configure(_ app: Application) throws {
-    // uncomment to serve files from /Public folder
 
     app.logger.logLevel =  app.environment.isRelease ? .info : .debug
 
+    // uncomment to serve files from /Public folder
     app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
+
+    /// extend paths to always contain a trailing slash
+    app.middleware.use(ExtendPathMiddleware())
 
 //    app.databases.use(.sqlite(
 //        hostname: Environment.get("DATABASE_HOST") ?? "localhost",
@@ -52,4 +55,15 @@ extension Environment {
 extension JWKIdentifier {
 
     static let appleMusic = JWKIdentifier(string: Environment.amJWKId)
+}
+
+@available(macOS 12, *)
+struct ExtendPathMiddleware: AsyncMiddleware {
+
+    func respond(to req: Request, chainingTo next: AsyncResponder) async throws -> Response {
+        if !req.url.path.hasSuffix("/") && !req.url.path.contains(".") {
+            return req.redirect(to: req.url.path + "/", type: .permanent)
+        }
+        return try await next.respond(to: req)
+    }
 }
