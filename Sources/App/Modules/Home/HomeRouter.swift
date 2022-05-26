@@ -29,6 +29,16 @@ struct HomeRouter: RouteCollection {
                                         .class("lead mb-4 detail-text")
                                 }
                                 .class("col-lg-6 mx-auto")
+                                Div {
+                                    Div {
+                                        Input()
+                                            .placeholder("Search for a song")
+                                            .type(.search)
+                                            .class("search-field")
+                                    }
+                                    .class("searchbar")
+                                }
+                                .class("d-flex justify-content-center h-100")
                             }
                             .class("px-4 py-5 my-5 text-center")
                         }
