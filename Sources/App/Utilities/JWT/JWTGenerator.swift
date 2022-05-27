@@ -74,4 +74,9 @@ extension JWTGenerator {
         return try JWTGenerator.generateAppleMusicToken(using: app, from: payload, kid: .appleMusic)
     }
 
+    static func fetchUserMusicToken(app: Application) throws -> String {
+        let musicToken = try String(contentsOfFile: app.directory.workingDirectory + "Secrets/" + "UserToken").trimmingCharacters(in: .newlines)
+        return "\(musicToken)"
+    }
+
 }
