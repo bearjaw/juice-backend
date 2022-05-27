@@ -18,7 +18,7 @@ enum MusicEndpoint: String {
     case genres
     case history
     case me
-    case playlist
+    case playlists
     case ratings
     case recommendations
     case search
@@ -32,6 +32,11 @@ enum MusicEndpoint: String {
     var endpoint: String {
         let baseURL = "\(MusicEndpoint.base)/\(MusicEndpoint.version)/"
         return "\(baseURL)\(MusicEndpoint.catalog.rawValue)/us/\(self.rawValue)"
+    }
+
+    var playlists: String {
+        let baseURL = "\(MusicEndpoint.base)/\(MusicEndpoint.version)/"
+        return "\(baseURL)/\(MusicEndpoint.me.rawValue)/library/\(self.rawValue)"
     }
 
 }
