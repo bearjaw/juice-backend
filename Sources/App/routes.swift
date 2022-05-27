@@ -12,7 +12,7 @@ func routes(_ app: Application) throws {
 
     let search = AppleMusicSearchRouter(token: token)
     
-    let playlist = PlaylistRouter(token: token)
+    let playlist = PlaylistsRouter(token: token)
 
     try app.register(collections: [
         home,
